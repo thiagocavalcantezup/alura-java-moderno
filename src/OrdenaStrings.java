@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class OrdenaStrings {
@@ -10,11 +11,13 @@ public class OrdenaStrings {
         palavras.add("editora casa do codigo");
         palavras.add("caelum");
 
-        palavras.sort((str1, str2) -> Integer.compare(str1.length(), str2.length()));
-        palavras.forEach(System.out::println);
+        palavras.sort(Comparator.comparing(String::length));
 
-        // Tarefa 02.06
-        new Thread(() -> System.out.println("Executando um Runnable")).start();
+        // Tarefa 03.06
+        // palavras.sort(Comparator.comparing(String::hashCode));
+        palavras.sort(Comparator.comparing(String::intern));
+
+        palavras.forEach(System.out::println);
     }
 
 }
