@@ -1,42 +1,51 @@
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ExemploAlunos {
 
     public static void main(String[] args) {
         List<Curso> cursos = new ArrayList<>();
+        List<Curso> cursosFiltrados;
 
         cursos.add(new Curso("Python", 45));
         cursos.add(new Curso("JavaScript", 150));
         cursos.add(new Curso("Java 8", 113));
         cursos.add(new Curso("C", 55));
 
-        System.out.println("- Ordenando por número de alunos (asc.)");
-        cursos.sort(Comparator.comparingInt(Curso::getAlunos));
-        cursos.forEach(System.out::println);
+        cursos.stream()
+              .filter(curso -> curso.getAlunos() >= 100)
+              .mapToInt(Curso::getAlunos)
+              .average()
+              .ifPresent(System.out::println);
 
-        System.out.println();
+        cursos.stream()
+              .filter(curso -> curso.getAlunos() >= 100)
+              .findAny()
+              .ifPresent(System.out::println);
 
-        System.out.println("- Filtrando e somando o total");
-        int totalAlunos = cursos.stream()
+        cursosFiltrados = cursos.stream()
                                 .filter(curso -> curso.getAlunos() >= 100)
-                                .mapToInt(Curso::getAlunos)
-                                .sum();
+                                .collect(Collectors.toList());
 
-        System.out.println("total: " + totalAlunos);
+        System.out.println(cursosFiltrados);
 
-        System.out.println();
+        cursos.stream()
+              .collect(Collectors.toMap(Curso::getNome, Curso::getAlunos))
+              .forEach((curso, alunos) -> {
+                  System.out.println("O curso " + curso + " tem " + alunos + " alunos.");
+              });
 
-        // Tarefa 04.03
-        System.out.println("- Filtrando cursos com mais de 50 alunos");
-        cursos.stream().filter(curso -> curso.getAlunos() > 50).forEach(System.out::println);
+        // Tarefa 05.04
+        Curso primeiroCurso = cursos.stream()
+                                    .filter(curso -> curso.getAlunos() > 50)
+                                    .findFirst()
+                                    .orElse(null);
 
-        System.out.println();
+        System.out.println("Primeiro curso (> 50 alunos): " + primeiroCurso);
 
-        // Tarefa 04.04
-        System.out.println("- Nomes dos cursos");
-        cursos.stream().map(Curso::getNome).forEach(System.out::println);
     }
 
 }
